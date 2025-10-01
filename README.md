@@ -1,1 +1,37 @@
 # cybersecurity-mini-project-User-Login-behavior-clustering
+
+# ✅ Step 1: Import required libraries
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+# ✅ Step 2: Create sample login behavior dataset
+data = pd.DataFrame({
+    'Login_Hour': [10, 11, 2, 10, 3, 11, 4, 9, 11, 1],
+    'Country': ['India', 'India', 'Russia', 'India', 'Germany', 'India', 'India', 'India', 'India', 'North Korea'],
+    'Device': ['Laptop', 'Laptop', 'Tablet', 'Laptop', 'Mobile', 'Laptop', 'Laptop', 'Laptop', 'Laptop', 'Tablet']
+})
+data
+
+# ✅ Step 3: Encode categorical variables to numeric values
+le = LabelEncoder()
+data['Country_Code'] = le.fit_transform(data['Country'])#calling the fn of label encoder
+data['Device_Code'] = le.fit_transform(data['Device'])
+features = data[['Login_Hour', 'Country_Code', 'Device_Code']]
+print(features)
+
+# ✅ Step 4: Apply KMeans clustering
+kmeans = KMeans(n_clusters=2, random_state=42)
+data['Cluster'] = kmeans.fit_predict(features)
+print(data)
+
+# ✅ Step 5: Visualize clusters
+plt.figure(figsize=(8,5))
+plt.scatter(data['Login_Hour'], data['Country_Code'], c=data['Cluster'], cmap='viridis')
+plt.xlabel("Login Hour")
+plt.ylabel("Country Code")
+plt.title("User Login Behavior Clustering")
+plt.grid(True)
+plt.show()
